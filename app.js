@@ -424,12 +424,14 @@ function guardarReceta() {
     if (!nombre) return;
 
     const receta = {
-        nombre,
-        fecha: new Date().toLocaleDateString('es-CL'),
-        ingredientes,
-        resumenCostos: document.getElementById('resumenTotal').innerHTML,
-        precio: document.getElementById('resultadoPrecio').innerHTML,
-        packs: document.getElementById('resultadoPacks').innerHTML
+    id: Date.now(),
+    nombre,
+    fecha: new Date().toLocaleDateString('es-CL'),
+    favorita: false,
+    ingredientes: JSON.parse(JSON.stringify(ingredientes)),
+    resumenCostos: document.getElementById('resumenTotal').innerHTML,
+    precio: document.getElementById('resultadoPrecio').innerHTML,
+    packs: document.getElementById('resultadoPacks').innerHTML
     };
 
     recetasGuardadas.push(receta);
@@ -473,4 +475,91 @@ function importarRespaldo(archivo) {
 
     reader.readAsText(archivo);
 }
+function renderRecetas() {
+    const cont = document.getElementById('listaRecetas');
+    if (!cont) return;
+
+    if (recetasGuardadas.length === 0) {
+        cont.innerHTML = '<p>No hay recetas guardadas.</p>';
+        return;
+    }
+
+    // favoritas primero
+    const ordenadas = [...recetasGuardadas].sort((a, b) =>
+        (b.favorita === true) - (a.favorita === true)
+    );
+
+    cont.innerHTML = '';
+
+    ordenadas.forEach(r => {
+        cont.innerHTML += `
+        <div class="card receta-item">
+            <strong>${r.favorita ? '⭐ ' : ''}${r.nombre}</strong><br>
+            <small>📅 ${r.fecha}</small>
+
+            <div style="margin-top:10px">
+                <button onclick="cargarReceta(${r.id})">🔁 Cargar</button>
+                <button onclick="toggleFavorita(${r.id})">
+                    ${r.favorita ? '⭐ Quitar favorita' : '☆ Marcar favorita'}
+                </button>
+                <button onclick="eliminarReceta(${r.id})">🗑️ Eliminar</button>
+            </div>
+        </div>
+        `;
+    });
+}
+
+function cargarReceta(id) {
+    const r = recetasGuardadas.find(r => r.id === id);
+    if (!r) return;
+
+    if (!confirm(`¿Cargar la receta "${r.nombre}"?\nSe reemplazará la actual.`)) return;
+
+    limpiarTodoSinConfirmar();
+
+    ingredientes = JSON.parse(JSON.stringify(r.ingredientes));
+    calcularIngredientes();
+
+    document.getElementById('resumenTotal').innerHTML = r.resumenCostos;
+    document.getElementById('resultadoPrecio').innerHTML = r.precio;
+    document.getElementById('resultadoPacks').innerHTML = r.packs;
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function limpiarTodoSinConfirmar() {
+    ingredientes = [];
+    document.querySelectorAll('input').forEach(i => i.value = '');
+    document.getElementById('resumenIngredientes').innerHTML = '';
+    document.getElementById('totalIngredientes').innerText = '';
+    document.getElementById('resumenTotal').innerHTML = '';
+    document.getElementById('resultadoPrecio').innerHTML = '';
+    document.getElementById('resultadoPacks').innerHTML = '';
+}
+
+function toggleFavorita(id) {
+    const r = recetasGuardadas.find(r => r.id === id);
+    if (!r) return;
+
+    r.favorita = !r.favorita;
+    localStorage.setItem('recetas', JSON.stringify(recetasGuardadas));
+    renderRecetas();
+}
+
+function eliminarReceta(id) {
+    const r = recetasGuardadas.find(r => r.id === id);
+    if (!r) return;
+
+    if (!confirm(`¿Eliminar la receta "${r.nombre}"?`)) return;
+
+    recetasGuardadas = recetasGuardadas.filter(r => r.id !== id);
+    localStorage.setItem('recetas', JSON.stringify(recetasGuardadas));
+    renderRecetas();
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    renderRecetas();
+});
+
+
 
