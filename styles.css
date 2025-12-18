@@ -290,3 +290,23 @@ button:hover {
 .btn-instalar:hover {
     background: #7a49a8;
 }
+
+.receta-item {
+    background: #faf7fd;
+    border-radius: 10px;
+    padding: 10px;
+    margin-bottom: 8px;
+}
+
+.receta-item strong {
+    display: block;
+    margin-bottom: 6px;
+}
+
+.receta-item button {
+    width: auto;
+    margin-right: 6px;
+    padding: 6px 10px;
+    font-size: 14px;
+}
+
