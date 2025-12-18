@@ -292,21 +292,39 @@ button:hover {
 }
 
 .receta-item {
-    background: #faf7fd;
-    border-radius: 10px;
-    padding: 10px;
-    margin-bottom: 8px;
+  background: #faf7fd;
+  border-radius: 12px;
+  padding: 12px;
+  margin-bottom: 12px;
 }
 
-.receta-item strong {
-    display: block;
-    margin-bottom: 6px;
+.receta-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
 }
 
-.receta-item button {
-    width: auto;
-    margin-right: 6px;
-    padding: 6px 10px;
-    font-size: 14px;
+.receta-actions {
+  display: flex;
+  gap: 8px;
 }
+
+.receta-actions button {
+  flex: 1;
+  padding: 8px;
+  font-size: 14px;
+}
+
+.icon-btn {
+  background: none;
+  border: none;
+  font-size: 20px;
+}
+
+button.danger {
+  background: #e57373;
+}
+
+
 
