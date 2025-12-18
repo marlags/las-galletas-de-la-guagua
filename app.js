@@ -14,498 +14,190 @@ function clp(n) {
 }
 
 function toggleSection(id) {
-    const section = document.getElementById(id);
-    if (section) section.classList.toggle('oculto');
+    const sec = document.getElementById(id);
+    if (sec) sec.classList.toggle('oculto');
+}
+
+function guardarLocal() {
+    localStorage.setItem('recetas', JSON.stringify(recetasGuardadas));
 }
 
 /*************************************************
  * INGREDIENTES
  *************************************************/
 function agregarIngrediente() {
-    const nombre = document.getElementById('ingNombre').value.trim();
-    const precio = Number(document.getElementById('ingPrecio').value);
-    const contenido = Number(document.getElementById('ingContenido').value);
-    const usado = Number(document.getElementById('ingUsado').value);
+    const nombre = ingNombre.value.trim();
+    const precio = Number(ingPrecio.value);
+    const contenido = Number(ingContenido.value);
+    const usado = Number(ingUsado.value);
 
     if (!nombre || precio <= 0 || contenido <= 0 || usado <= 0) {
-        alert('Por favor completa todos los datos del ingrediente.');
+        alert('Completa todos los datos del ingrediente');
         return;
     }
 
     const costo = (precio / contenido) * usado;
+    ingredientes.push({ nombre, costo });
 
-    ingredientes.push({
-        nombre,
-        costo
-    });
-
-    document.getElementById('ingNombre').value = '';
-    document.getElementById('ingPrecio').value = '';
-    document.getElementById('ingContenido').value = '';
-    document.getElementById('ingUsado').value = '';
+    ingNombre.value = '';
+    ingPrecio.value = '';
+    ingContenido.value = '';
+    ingUsado.value = '';
 
     calcularIngredientes();
 }
 
 function calcularIngredientes() {
     let total = 0;
-    const res = document.getElementById('resumenIngredientes');
-    res.innerHTML = '';
+    resumenIngredientes.innerHTML = '';
 
     ingredientes.forEach(i => {
         total += i.costo;
-        res.innerHTML += `
-      <div class="linea">
-        <span>${i.nombre}</span>
-        <span>$${clp(Math.round(i.costo))}</span>
-      </div>
-    `;
+        resumenIngredientes.innerHTML += `
+            <div class="linea">
+                <span>${i.nombre}</span>
+                <span>$${clp(Math.round(i.costo))}</span>
+            </div>
+        `;
     });
 
-    document.getElementById('totalIngredientes').innerText =
-        'Total ingredientes: $' + clp(Math.round(total));
-
+    totalIngredientes.innerText = `Total ingredientes: $${clp(Math.round(total))}`;
     return total;
 }
 
 /*************************************************
- * COSTOS EXTRA + TRABAJO
+ * COSTOS
  *************************************************/
 function calcularCostosExtra() {
-    const gas = Number(document.getElementById('costoGas').value || 0);
-    const envases = Number(document.getElementById('costoEnvases').value || 0);
-    const transporte = Number(document.getElementById('costoTransporte').value || 0);
-    const horas = Number(document.getElementById('horasTrabajo').value || 0);
-    const valorHora = Number(document.getElementById('valorHora').value || 0);
+    const gas = Number(costoGas.value || 0);
+    const envases = Number(costoEnvases.value || 0);
+    const transporte = Number(costoTransporte.value || 0);
+    const horas = Number(horasTrabajo.value || 0);
+    const valorHora = Number(valorHoraInput.value || 0);
 
     const trabajo = horas * valorHora;
-    const totalIngredientes = calcularIngredientes();
+    const totalIng = calcularIngredientes();
+    const total = totalIng + gas + envases + transporte + trabajo;
 
-    const total =
-        totalIngredientes +
-        gas +
-        envases +
-        transporte +
-        trabajo;
-
-    document.getElementById('resumenTotal').innerHTML = `
-    <div class="linea"><span>Ingredientes</span><span>$${clp(Math.round(totalIngredientes))}</span></div>
-    <div class="linea"><span>Gas / luz / horno</span><span>$${clp(Math.round(gas))}</span></div>
-    <div class="linea"><span>Envases</span><span>$${clp(Math.round(envases))}</span></div>
-    <div class="linea"><span>Transporte</span><span>$${clp(Math.round(transporte))}</span></div>
-    <div class="linea"><span>Trabajo</span><span>$${clp(Math.round(trabajo))}</span></div>
-    <div class="total"><span>COSTO TOTAL RECETA</span><span>$${clp(Math.round(total))}</span></div>
-  `;
+    resumenTotal.innerHTML = `
+        <div class="linea"><span>Ingredientes</span><span>$${clp(Math.round(totalIng))}</span></div>
+        <div class="linea"><span>Gas / luz</span><span>$${clp(Math.round(gas))}</span></div>
+        <div class="linea"><span>Envases</span><span>$${clp(Math.round(envases))}</span></div>
+        <div class="linea"><span>Transporte</span><span>$${clp(Math.round(transporte))}</span></div>
+        <div class="linea"><span>Trabajo</span><span>$${clp(Math.round(trabajo))}</span></div>
+        <div class="total"><span>COSTO TOTAL</span><span>$${clp(Math.round(total))}</span></div>
+    `;
 
     return total;
 }
 
 /*************************************************
- * PRECIO DE VENTA
+ * PRECIO Y PACKS
  *************************************************/
 function calcularPrecioVenta() {
-    const costoTotal = calcularCostosExtra();
-    const unidades = Number(document.getElementById('unidadesProducidas').value || 0);
-    const margen = Number(document.getElementById('margenGanancia').value || 0);
+    const total = calcularCostosExtra();
+    const unidades = Number(unidadesProducidas.value || 0);
+    const margen = Number(margenGanancia.value || 0);
 
     if (unidades <= 0) {
-        document.getElementById('resultadoPrecio').innerHTML =
-            '⚠️ Debes indicar cuántas unidades produces.';
+        resultadoPrecio.innerHTML = 'Indica cuántas unidades produces';
         return;
     }
 
-    const costoUnitario = costoTotal / unidades;
-    const precioVenta = costoUnitario * (1 + margen / 100);
+    const costoUnitario = total / unidades;
+    const precio = costoUnitario * (1 + margen / 100);
 
-    let alerta = '';
-    if (margen < 30) alerta = '👶 Estás cobrando muy barato.';
-    else if (margen < 50) alerta = '⚠️ Margen ajustado.';
-    else alerta = '✅ Precio saludable.';
+    resultadoPrecio.innerHTML = `
+        <div><b>Unidades:</b> ${unidades}</div>
+        <div><b>Costo unitario:</b> $${clp(Math.round(costoUnitario))}</div>
+        <div><b>Precio sugerido:</b> $${clp(Math.round(precio))}</div>
+    `;
 
-    document.getElementById('resultadoPrecio').innerHTML = `
-    <div><b>Costo unitario:</b> $${clp(Math.round(costoUnitario))}</div>
-    <div><b>Precio sugerido:</b> $${clp(Math.round(precioVenta))}</div>
-    <div style="margin-top:8px">${alerta}</div>
-  `;
-
-    window._precioUnitario = precioVenta;
+    window._precioUnitario = precio;
     window._costoUnitario = costoUnitario;
 
     calcularPacks();
 }
 
-/*************************************************
- * PACKS (AUTOMÁTICO Y CONVENIENTE)
- *************************************************/
 function calcularPacks() {
     if (!window._precioUnitario) return;
 
-    const precioUnitario = window._precioUnitario;
-    const costoUnitario = window._costoUnitario;
-
-    const packs = [{
-            unidades: 2,
-            factor: 1.0
-        },
-        {
-            unidades: 3,
-            factor: 0.87
-        },
-        {
-            unidades: 6,
-            factor: 0.8
-        }
+    const packs = [
+        { u: 2, f: 1 },
+        { u: 3, f: 0.87 },
+        { u: 6, f: 0.8 }
     ];
 
-    let html = '';
+    resultadoPacks.innerHTML = '';
 
     packs.forEach(p => {
-        let precioPack = precioUnitario * p.unidades * p.factor;
-        precioPack = Math.ceil(precioPack / 100) * 100;
-
-        const costoPack = costoUnitario * p.unidades;
+        let precioPack = Math.ceil(window._precioUnitario * p.u * p.f / 100) * 100;
+        const costoPack = window._costoUnitario * p.u;
         const ganancia = precioPack - costoPack;
-        const precioUnidad = precioPack / p.unidades;
 
-        html += `
-      <div class="pack-card">
-        <span class="ganancia-tag">Ganancia: $${clp(Math.round(ganancia))}</span>
-        <strong>${p.unidades} unidades</strong>
-        <span>Precio pack: $${clp(precioPack)} | Unidad: $${clp(Math.round(precioUnidad))}</span>
-      </div>
-    `;
-    });
-
-    document.getElementById('resultadoPacks').innerHTML = html;
-}
-
-/*************************************************
- * EXPORTAR
- *************************************************/
-function pedirNombreReceta() {
-    const nombre = prompt(
-        '📝 Nombre de la receta\n\nEj: Galletas navideñas de chocolate'
-    );
-    if (!nombre || !nombre.trim()) return null;
-    return nombre.trim();
-}
-
-function exportarPDF() {
-    const nombre = pedirNombreReceta();
-    if (!nombre) return;
-
-    nombreRecetaActual = nombre;
-    accionUsuario = true;
-
-    generarReporte();
-    window.print();
-
-    setTimeout(() => cerrarReporte(), 500);
-}
-
-function exportarImagen() {
-    const nombre = pedirNombreReceta();
-    if (!nombre) return;
-
-    nombreRecetaActual = nombre;
-    accionUsuario = true;
-
-    generarReporte();
-    const reporte = document.getElementById('reporte');
-
-    html2canvas(reporte, {
-        scale: 2
-    }).then(canvas => {
-        const a = document.createElement('a');
-        a.href = canvas.toDataURL('image/png');
-        a.download = `${nombre}.png`;
-        a.click();
-        cerrarReporte();
-    });
-}
-
-/*************************************************
- * REPORTE
- *************************************************/
-function generarReporte() {
-    if (!accionUsuario) return;
-
-    const reporte = document.getElementById('reporte');
-    reporte.classList.remove('oculto');
-
-    reporte.querySelector('.rep-titulo').innerText =
-        nombreRecetaActual || 'Receta sin nombre';
-
-    reporte.querySelector('.fecha').innerText =
-        'Fecha: ' + new Date().toLocaleDateString('es-CL');
-
-    // Ingredientes
-    const ingDiv = reporte.querySelector('.rep-ingredientes');
-    ingDiv.innerHTML = '';
-    let totalIng = 0;
-
-    ingredientes.forEach(i => {
-        totalIng += i.costo;
-        ingDiv.innerHTML += `
-      <div class="linea">
-        <span>${i.nombre}</span>
-        <span>$${clp(Math.round(i.costo))}</span>
-      </div>
-    `;
-    });
-
-    ingDiv.innerHTML += `
-    <div class="total">
-      <span>Total ingredientes</span>
-      <span>$${clp(Math.round(totalIng))}</span>
-    </div>
-  `;
-
-    reporte.querySelector('.rep-costos').innerHTML =
-        document.getElementById('resumenTotal').innerHTML;
-    
-    // Producción y precio
-    const repPrecio = reporte.querySelector('.rep-precio');
-
-    const unidades = Number(document.getElementById('unidadesProducidas').value || 0);
-    const costoUnitario = window._costoUnitario || 0;
-    const precioUnitario = window._precioUnitario || 0;
-
-    repPrecio.innerHTML = `
-    <div class="linea">
-        <span>Unidades producidas</span>
-        <span>${unidades}</span>
-    </div>
-    <div class="linea">
-        <span>Costo unitario</span>
-        <span>$${clp(Math.round(costoUnitario))}</span>
-    </div>
-    <div class="total">
-        <span>Precio sugerido</span>
-        <span>$${clp(Math.round(precioUnitario))}</span>
-    </div>
-    `;
-
-    reporte.querySelector('.rep-packs').innerHTML =
-        document.getElementById('resultadoPacks').innerHTML;
-}
-
-function cerrarReporte() {
-    const reporte = document.getElementById('reporte');
-    if (reporte) reporte.classList.add('oculto');
-    accionUsuario = false;
-    nombreRecetaActual = '';
-}
-
-/*************************************************
- * LIMPIAR TODO
- *************************************************/
-function limpiarTodo() {
-    if (!confirm('¿Segura que quieres borrar toda la receta y comenzar de nuevo?')) return;
-
-    ingredientes = [];
-    document.querySelectorAll('input').forEach(i => i.value = '');
-    document.getElementById('resumenIngredientes').innerHTML = '';
-    document.getElementById('totalIngredientes').innerText = '';
-    document.getElementById('resumenTotal').innerHTML = '';
-    document.getElementById('resultadoPrecio').innerHTML = '';
-    document.getElementById('resultadoPacks').innerHTML = '';
-
-    delete window._precioUnitario;
-    delete window._costoUnitario;
-
-    cerrarReporte();
-
-    ['sec-costos', 'sec-precio', 'sec-packs', 'sec-exportar'].forEach(id => {
-        const s = document.getElementById(id);
-        if (s) s.classList.add('oculto');
-    });
-
-    document.getElementById('sec-ingredientes').classList.remove('oculto');
-
-    window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-    });
-}
-
-window.addEventListener('load', () => {
-    const splash = document.getElementById('splash');
-    if (splash) {
-        setTimeout(() => {
-            splash.style.display = 'none';
-        }, 1200); // 1.2 segundos
-    }
-});
-
-let deferredPrompt;
-
-window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-
-    const btnInstalar = document.getElementById('btnInstalar');
-    if (btnInstalar) btnInstalar.classList.remove('oculto');
-});
-
-const btnInstalar = document.getElementById('btnInstalar');
-
-if (btnInstalar) {
-    btnInstalar.addEventListener('click', async () => {
-        if (!deferredPrompt) return;
-
-        deferredPrompt.prompt();
-        await deferredPrompt.userChoice;
-
-        deferredPrompt = null;
-        btnInstalar.classList.add('oculto');
-    });
-}
-
-function compartirWhatsApp() {
-    const nombre = pedirNombreReceta();
-    if (!nombre) return;
-
-    nombreRecetaActual = nombre;
-    accionUsuario = true;
-
-    generarReporte();
-
-    html2canvas(document.getElementById('reporte'), {
-            scale: 2
-        })
-        .then(canvas => {
-            canvas.toBlob(blob => {
-                const file = new File([blob], `${nombre}.png`, {
-                    type: 'image/png'
-                });
-
-                if (navigator.share) {
-                    navigator.share({
-                        files: [file],
-                        title: 'Reporte de costos',
-                        text: 'Te comparto el reporte de mi receta 🍪'
-                    }).catch(() => {});
-                } else {
-                    alert('Tu navegador no soporta compartir archivos.');
-                }
-
-                cerrarReporte();
-            });
-        });
-}
-
-function mostrarAdvertenciaGuardado() {
-    const visto = localStorage.getItem('avisoGuardado');
-    if (visto) return true;
-
-    const ok = confirm(
-`⚠️ IMPORTANTE
-
-Las recetas se guardan solo en este celular.
-
-Si borras la app o los datos, las recetas se perderán.
-
-👉 Recomendamos exportar un respaldo.
-
-¿Deseas continuar?`
-    );
-
-    if (ok) {
-        localStorage.setItem('avisoGuardado', 'ok');
-    }
-
-    return ok;
-}
-
-function guardarReceta() {
-    let nombre = nombreRecetaActual;
-
-    if (!nombre) {
-        nombre = pedirNombreReceta();
-        if (!nombre) return;
-    }
-
-    const receta = {
-        id: Date.now(),
-        nombre,
-        ingredientes: JSON.parse(JSON.stringify(ingredientes)),
-        resumenTotal: document.getElementById('resumenTotal').innerHTML,
-        resultadoPrecio: document.getElementById('resultadoPrecio').innerHTML,
-        resultadoPacks: document.getElementById('resultadoPacks').innerHTML,
-        favorita: false,
-        fecha: new Date().toLocaleDateString('es-CL')
-    };
-
-    recetasGuardadas.push(receta);
-    localStorage.setItem('recetas', JSON.stringify(recetasGuardadas));
-
-    renderRecetas();
-    alert('💾 Receta guardada en este celular');
-}
-
-
-function exportarRespaldo() {
-    if (recetasGuardadas.length === 0) {
-        alert('No hay recetas guardadas');
-        return;
-    }
-
-    const blob = new Blob(
-        [JSON.stringify(recetasGuardadas, null, 2)],
-        { type: 'application/json' }
-    );
-
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = 'respaldo-galletas.json';
-    a.click();
-}
-function importarRespaldo(archivo) {
-    if (!archivo) return;
-
-    const reader = new FileReader();
-    reader.onload = e => {
-        try {
-            const data = JSON.parse(e.target.result);
-            if (!Array.isArray(data)) throw 'Formato inválido';
-
-            recetasGuardadas = data;
-            localStorage.setItem('recetas', JSON.stringify(recetasGuardadas));
-
-            alert('✅ Recetas restauradas correctamente');
-        } catch {
-            alert('❌ Archivo inválido');
-        }
-    };
-
-    reader.readAsText(archivo);
-}
-function renderRecetas() {
-    const cont = document.getElementById('listaRecetas');
-
-    if (!recetasGuardadas || recetasGuardadas.length === 0) {
-        cont.innerHTML = `
-            <p style="opacity:.7">
-                📭 No hay recetas guardadas todavía.
-            </p>
-        `;
-        return;
-    }
-
-    cont.innerHTML = '';
-
-    recetasGuardadas.forEach(r => {
-        cont.innerHTML += `
-            <div class="receta-item">
-                <strong>${r.favorita ? '⭐ ' : ''}${r.nombre}</strong>
-
-                <button onclick="cargarReceta(${r.id})">🔁 Cargar</button>
-                <button onclick="toggleFavorita(${r.id})">⭐</button>
-                <button onclick="borrarReceta(${r.id})">🗑️</button>
+        resultadoPacks.innerHTML += `
+            <div class="pack-card">
+                <span class="ganancia-tag">Ganancia $${clp(Math.round(ganancia))}</span>
+                <strong>${p.u} unidades</strong>
+                <span>Precio: $${clp(precioPack)} | Unidad: $${clp(Math.round(precioPack/p.u))}</span>
             </div>
         `;
     });
+}
+
+/*************************************************
+ * GUARDAR RECETAS
+ *************************************************/
+function mostrarAdvertenciaGuardado() {
+    return confirm(
+        '⚠️ Las recetas se guardan solo en este celular.\n' +
+        'Si borras la app se perderán.\n\n¿Deseas continuar?'
+    );
+}
+
+function guardarReceta() {
+    if (ingredientes.length === 0) {
+        alert('Agrega ingredientes antes de guardar');
+        return;
+    }
+
+    if (!mostrarAdvertenciaGuardado()) return;
+
+    const nombre = prompt('Nombre de la receta');
+    if (!nombre) return;
+
+    recetasGuardadas.push({
+        id: Date.now(),
+        nombre,
+        ingredientes,
+        resumen: resumenTotal.innerHTML,
+        precio: resultadoPrecio.innerHTML,
+        packs: resultadoPacks.innerHTML,
+        favorita: false
+    });
+
+    guardarLocal();
+    renderRecetas();
+    alert('Receta guardada 💜');
+}
+
+function renderRecetas() {
+    listaRecetas.innerHTML = '';
+
+    recetasGuardadas
+        .sort((a,b)=> b.favorita - a.favorita)
+        .forEach(r => {
+            listaRecetas.innerHTML += `
+                <div class="card">
+                    <b>${r.nombre}</b>
+                    <div style="margin-top:8px">
+                        <button onclick="cargarReceta(${r.id})">📂 Cargar</button>
+                        <button onclick="borrarReceta(${r.id})">🗑️</button>
+                        <button onclick="toggleFav(${r.id})">${r.favorita?'⭐':'☆'}</button>
+                    </div>
+                </div>
+            `;
+        });
 }
 
 function cargarReceta(id) {
@@ -513,49 +205,99 @@ function cargarReceta(id) {
     if (!r) return;
 
     ingredientes = r.ingredientes;
-
     calcularIngredientes();
 
-    document.getElementById('resumenTotal').innerHTML = r.resumenTotal;
-    document.getElementById('resultadoPrecio').innerHTML = r.resultadoPrecio;
-    document.getElementById('resultadoPacks').innerHTML = r.resultadoPacks;
-
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-function limpiarTodoSinConfirmar() {
-    ingredientes = [];
-    document.querySelectorAll('input').forEach(i => i.value = '');
-    document.getElementById('resumenIngredientes').innerHTML = '';
-    document.getElementById('totalIngredientes').innerText = '';
-    document.getElementById('resumenTotal').innerHTML = '';
-    document.getElementById('resultadoPrecio').innerHTML = '';
-    document.getElementById('resultadoPacks').innerHTML = '';
-}
-
-function toggleFavorita(id) {
-    recetasGuardadas = recetasGuardadas.map(r =>
-        r.id === id ? { ...r, favorita: !r.favorita } : r
-    );
-
-    localStorage.setItem('recetas', JSON.stringify(recetasGuardadas));
-    renderRecetas();
+    resumenTotal.innerHTML = r.resumen;
+    resultadoPrecio.innerHTML = r.precio;
+    resultadoPacks.innerHTML = r.packs;
 }
 
 function borrarReceta(id) {
-    if (!confirm('¿Borrar esta receta?')) return;
-
+    if (!confirm('¿Eliminar receta?')) return;
     recetasGuardadas = recetasGuardadas.filter(r => r.id !== id);
-    localStorage.setItem('recetas', JSON.stringify(recetasGuardadas));
+    guardarLocal();
     renderRecetas();
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+function toggleFav(id) {
+    const r = recetasGuardadas.find(x => x.id === id);
+    if (!r) return;
+    r.favorita = !r.favorita;
+    guardarLocal();
     renderRecetas();
-});
+}
 
+/*************************************************
+ * EXPORTAR
+ *************************************************/
+function pedirNombreReceta() {
+    const n = prompt('Nombre del reporte');
+    return n ? n.trim() : null;
+}
 
+function exportarPDF() {
+    const n = pedirNombreReceta();
+    if (!n) return;
 
+    nombreRecetaActual = n;
+    accionUsuario = true;
+    generarReporte();
+    window.print();
+    cerrarReporte();
+}
 
+function exportarImagen() {
+    const n = pedirNombreReceta();
+    if (!n) return;
 
+    nombreRecetaActual = n;
+    accionUsuario = true;
+    generarReporte();
 
+    html2canvas(reporte,{scale:2}).then(c=>{
+        const a=document.createElement('a');
+        a.href=c.toDataURL();
+        a.download=`${n}.png`;
+        a.click();
+        cerrarReporte();
+    });
+}
+
+function generarReporte() {
+    if (!accionUsuario) return;
+
+    reporte.classList.remove('oculto');
+    reporte.querySelector('.rep-titulo').innerText = nombreRecetaActual;
+    reporte.querySelector('.fecha').innerText =
+        new Date().toLocaleDateString('es-CL');
+
+    const ing = reporte.querySelector('.rep-ingredientes');
+    ing.innerHTML = '';
+    ingredientes.forEach(i=>{
+        ing.innerHTML+=`<div class="linea"><span>${i.nombre}</span><span>$${clp(Math.round(i.costo))}</span></div>`;
+    });
+
+    reporte.querySelector('.rep-costos').innerHTML = resumenTotal.innerHTML;
+    reporte.querySelector('.rep-packs').innerHTML = resultadoPacks.innerHTML;
+}
+
+function cerrarReporte() {
+    reporte.classList.add('oculto');
+    accionUsuario=false;
+    nombreRecetaActual='';
+}
+
+/*************************************************
+ * LIMPIAR TODO
+ *************************************************/
+function limpiarTodo() {
+    if (!confirm('¿Borrar toda la receta?')) return;
+
+    ingredientes=[];
+    document.querySelectorAll('input').forEach(i=>i.value='');
+    resumenIngredientes.innerHTML='';
+    totalIngredientes.innerText='';
+    resumenTotal.innerHTML='';
+    resultadoPrecio.innerHTML='';
+    resultadoPacks.innerHTML='';
+}
