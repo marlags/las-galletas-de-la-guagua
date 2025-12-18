@@ -1,19 +1,22 @@
 {
-    "name": "Galletas de la guagua 🍪",
-    "short_name": "Galletas de la 👶",
-    "start_url": "/",
-    "display": "standalone",
-    "background_color": "#f6f0fa",
-    "theme_color": "#b48bd6",
-    "icons": [{
-            "src": "icon-192.png",
-            "sizes": "192x192",
-            "type": "image/png"
-        },
-        {
-            "src": "icon-512.png",
-            "sizes": "512x512",
-            "type": "image/png"
-        }
-    ]
+  "name": "Galletas de la guagua",
+  "short_name": "Galletas 🍪",
+  "start_url": "/las-galletas-de-la-guagua/",
+  "scope": "/las-galletas-de-la-guagua/",
+  "display": "standalone",
+  "background_color": "#b48bd6",
+  "theme_color": "#b48bd6",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
 }
