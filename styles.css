@@ -41,15 +41,21 @@ small {
     color: #555;
 }
 
-input, button {
+input,
+button {
     width: 100%;
     padding: 10px;
     margin-top: 4px;
     border-radius: 8px;
-    border: none;
+    border: 1px solid #ccc;
     font-size: 16px;
+}
+
+button {
     background: var(--morado);
     color: white;
+    border: none;
+    margin-top: 10px;
 }
 
 button:hover {
@@ -286,41 +292,20 @@ button:hover {
 }
 
 .receta-item {
-  background: #faf7fd;
-  border-radius: 12px;
-  padding: 12px;
-  margin-bottom: 12px;
+    background: #faf7fd;
+    border-radius: 10px;
+    padding: 10px;
+    margin-bottom: 8px;
 }
 
-.receta-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 10px;
+.receta-item strong {
+    display: block;
+    margin-bottom: 6px;
 }
 
-.receta-actions {
-  display: flex;
-  gap: 8px;
+.receta-item button {
+    width: auto;
+    margin-right: 6px;
+    padding: 6px 10px;
+    font-size: 14px;
 }
-
-.receta-actions button {
-  flex: 1;
-  padding: 8px;
-  font-size: 14px;
-  border-radius: 10px;
-}
-
-.icon-btn {
-  background: none;
-  border: none;
-  font-size: 20px;
-}
-
-button.danger {
-  background: #e57373;
-}
-
-
-
-
