@@ -477,52 +477,42 @@ function importarRespaldo(archivo) {
 }
 function renderRecetas() {
     const cont = document.getElementById('listaRecetas');
-    if (!cont) return;
 
-    if (recetasGuardadas.length === 0) {
-        cont.innerHTML = '<p>No hay recetas guardadas.</p>';
+    if (!recetasGuardadas || recetasGuardadas.length === 0) {
+        cont.innerHTML = `
+            <p style="opacity:.7">
+                📭 No hay recetas guardadas todavía.
+            </p>
+        `;
         return;
     }
 
-    // favoritas primero
-    const ordenadas = [...recetasGuardadas].sort((a, b) =>
-        (b.favorita === true) - (a.favorita === true)
-    );
-
     cont.innerHTML = '';
 
-    ordenadas.forEach(r => {
+    recetasGuardadas.forEach(r => {
         cont.innerHTML += `
-        <div class="card receta-item">
-            <strong>${r.favorita ? '⭐ ' : ''}${r.nombre}</strong><br>
-            <small>📅 ${r.fecha}</small>
+            <div class="receta-item">
+                <strong>${r.favorita ? '⭐ ' : ''}${r.nombre}</strong>
 
-            <div style="margin-top:10px">
                 <button onclick="cargarReceta(${r.id})">🔁 Cargar</button>
-                <button onclick="toggleFavorita(${r.id})">
-                    ${r.favorita ? '⭐ Quitar favorita' : '☆ Marcar favorita'}
-                </button>
-                <button onclick="eliminarReceta(${r.id})">🗑️ Eliminar</button>
+                <button onclick="toggleFavorita(${r.id})">⭐</button>
+                <button onclick="borrarReceta(${r.id})">🗑️</button>
             </div>
-        </div>
         `;
     });
 }
 
 function cargarReceta(id) {
-    const r = recetasGuardadas.find(r => r.id === id);
+    const r = recetasGuardadas.find(x => x.id === id);
     if (!r) return;
 
-    if (!confirm(`¿Cargar la receta "${r.nombre}"?\nSe reemplazará la actual.`)) return;
+    ingredientes = r.ingredientes;
 
-    limpiarTodoSinConfirmar();
-
-    ingredientes = JSON.parse(JSON.stringify(r.ingredientes));
     calcularIngredientes();
 
-    document.getElementById('resumenTotal').innerHTML = r.resumenCostos;
-    document.getElementById('resultadoPrecio').innerHTML = r.precio;
-    document.getElementById('resultadoPacks').innerHTML = r.packs;
+    document.getElementById('resumenTotal').innerHTML = r.resumenTotal;
+    document.getElementById('resultadoPrecio').innerHTML = r.resultadoPrecio;
+    document.getElementById('resultadoPacks').innerHTML = r.resultadoPacks;
 
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -538,19 +528,16 @@ function limpiarTodoSinConfirmar() {
 }
 
 function toggleFavorita(id) {
-    const r = recetasGuardadas.find(r => r.id === id);
-    if (!r) return;
+    recetasGuardadas = recetasGuardadas.map(r =>
+        r.id === id ? { ...r, favorita: !r.favorita } : r
+    );
 
-    r.favorita = !r.favorita;
     localStorage.setItem('recetas', JSON.stringify(recetasGuardadas));
     renderRecetas();
 }
 
-function eliminarReceta(id) {
-    const r = recetasGuardadas.find(r => r.id === id);
-    if (!r) return;
-
-    if (!confirm(`¿Eliminar la receta "${r.nombre}"?`)) return;
+function borrarReceta(id) {
+    if (!confirm('¿Borrar esta receta?')) return;
 
     recetasGuardadas = recetasGuardadas.filter(r => r.id !== id);
     localStorage.setItem('recetas', JSON.stringify(recetasGuardadas));
@@ -560,6 +547,7 @@ function eliminarReceta(id) {
 document.addEventListener('DOMContentLoaded', () => {
     renderRecetas();
 });
+
 
 
 
