@@ -41,21 +41,19 @@ small {
     color: #555;
 }
 
-input,
+input {
+    width: 100%;
+}
+
 button {
     width: 100%;
     padding: 10px;
     margin-top: 4px;
     border-radius: 8px;
-    border: 1px solid #ccc;
+    border: none;
     font-size: 16px;
-}
-
-button {
     background: var(--morado);
     color: white;
-    border: none;
-    margin-top: 10px;
 }
 
 button:hover {
@@ -314,6 +312,7 @@ button:hover {
   flex: 1;
   padding: 8px;
   font-size: 14px;
+  border-radius: 10px;
 }
 
 .icon-btn {
@@ -325,6 +324,7 @@ button:hover {
 button.danger {
   background: #e57373;
 }
+
 
 
 
