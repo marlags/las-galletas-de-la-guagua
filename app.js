@@ -4,6 +4,7 @@
 let accionUsuario = false;
 let nombreRecetaActual = '';
 let ingredientes = [];
+let recetasGuardadas = JSON.parse(localStorage.getItem('recetas')) || [];
 
 /*************************************************
  * UTILIDADES
@@ -393,3 +394,63 @@ function compartirWhatsApp() {
             });
         });
 }
+
+function mostrarAdvertenciaGuardado() {
+    const visto = localStorage.getItem('avisoGuardado');
+    if (visto) return true;
+
+    const ok = confirm(
+`⚠️ IMPORTANTE
+
+Las recetas se guardan solo en este celular.
+
+Si borras la app o los datos, las recetas se perderán.
+
+👉 Recomendamos exportar un respaldo.
+
+¿Deseas continuar?`
+    );
+
+    if (ok) {
+        localStorage.setItem('avisoGuardado', 'ok');
+    }
+
+    return ok;
+}
+function guardarReceta() {
+    if (!mostrarAdvertenciaGuardado()) return;
+
+    const nombre = pedirNombreReceta();
+    if (!nombre) return;
+
+    const receta = {
+        nombre,
+        fecha: new Date().toLocaleDateString('es-CL'),
+        ingredientes,
+        resumenCostos: document.getElementById('resumenTotal').innerHTML,
+        precio: document.getElementById('resultadoPrecio').innerHTML,
+        packs: document.getElementById('resultadoPacks').innerHTML
+    };
+
+    recetasGuardadas.push(receta);
+    localStorage.setItem('recetas', JSON.stringify(recetasGuardadas));
+
+    alert('💾 Receta guardada en el celular');
+}
+function exportarRespaldo() {
+    if (recetasGuardadas.length === 0) {
+        alert('No hay recetas guardadas');
+        return;
+    }
+
+    const blob = new Blob(
+        [JSON.stringify(recetasGuardadas, null, 2)],
+        { type: 'application/json' }
+    );
+
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'respaldo-galletas.json';
+    a.click();
+}
+
