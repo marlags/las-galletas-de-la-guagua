@@ -23,6 +23,19 @@
     <div class="app">
 
         <h1>🍪 Galletas de la guagua</h1>
+
+        <!-- ===== RECETAS GUARDADAS (PRIMERA SECCIÓN) ===== -->
+        <div class="card">
+            <div class="section-header" onclick="toggleSection('sec-recetas')">
+                📚 Recetas guardadas
+                <span>tocar para abrir / cerrar</span>
+            </div>
+        
+            <div id="sec-recetas" class="section-content">
+                <div id="listaRecetas"></div>
+            </div>
+        </div>
+
         <button id="btnInstalar" class="btn-instalar oculto">
             📲 Instalar Galletas de la guagua
         </button>
@@ -184,5 +197,6 @@
 </body>
 
 </html>
+
 
 
