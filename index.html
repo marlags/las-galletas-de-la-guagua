@@ -130,7 +130,7 @@
         <!-- ===== SECCIÓN 5: EXPORTAR ===== -->
         <div class="card">
             <div class="section-header" onclick="toggleSection('sec-exportar')">
-                📤 Exportar
+                📤 Exportar/Importar
                 <span>tocar para abrir / cerrar</span>
             </div>
 
@@ -143,7 +143,7 @@
                 <input type="file" id="importarRespaldo" accept=".json" hidden
                        onchange="importarRespaldo(this.files[0])">
                 <button onclick="document.getElementById('importarRespaldo').click()">
-                📥 Restaurar recetas
+                📥 Importar respaldo
                 </button>
             </div>
         </div>
@@ -184,4 +184,5 @@
 </body>
 
 </html>
+
 
