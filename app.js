@@ -453,4 +453,24 @@ function exportarRespaldo() {
     a.download = 'respaldo-galletas.json';
     a.click();
 }
+function importarRespaldo(archivo) {
+    if (!archivo) return;
+
+    const reader = new FileReader();
+    reader.onload = e => {
+        try {
+            const data = JSON.parse(e.target.result);
+            if (!Array.isArray(data)) throw 'Formato inválido';
+
+            recetasGuardadas = data;
+            localStorage.setItem('recetas', JSON.stringify(recetasGuardadas));
+
+            alert('✅ Recetas restauradas correctamente');
+        } catch {
+            alert('❌ Archivo inválido');
+        }
+    };
+
+    reader.readAsText(archivo);
+}
 
