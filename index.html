@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Galletas de la guagua</title>
+
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#b48bd6">
+    <link rel="icon" type="image/png" href="icon-192.png">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <link rel="stylesheet" href="styles.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+</head>
+
+<body>
+    <div id="splash">
+        <img src="splash.png" alt="Galletas de la guagua">
+    </div>
+
+    <div class="app">
+
+        <h1>🍪 Galletas de la guagua</h1>
+        <button id="btnInstalar" class="btn-instalar oculto">
+            📲 Instalar Galletas de la guagua
+        </button>
+
+
+        <!-- ===== SECCIÓN 1: INGREDIENTES ===== -->
+       <div class="card">
+           <div class="section-header" onclick="toggleSection('sec-ingredientes')">
+               🧾 Ingredientes
+               <span>tocar para abrir / cerrar</span>
+           </div>
+
+           <div id="sec-ingredientes" class="section-content">
+
+               <p class="ayuda">
+                   ✏️ Ingresa los datos del ingrediente y luego toca “Agregar ingrediente”.
+               </p>
+
+               <label>Nombre del ingrediente</label>
+               <input id="ingNombre" placeholder="Ej: Harina">
+
+               <label>Precio del paquete completo (CLP)</label>
+               <input id="ingPrecio" type="number" placeholder="Ej: 2.500">
+
+               <label>Contenido del paquete (gramos o ml)</label>
+               <input id="ingContenido" type="number" placeholder="Ej: 1000">
+
+               <label>Cantidad usada en esta receta (gramos o ml)</label>
+               <input id="ingUsado" type="number" placeholder="Ej: 200">
+
+               <button class="btn-principal" onclick="agregarIngrediente()">
+                   ➕ Agregar ingrediente
+               </button>
+
+               <hr>
+
+               <h3>📊 Ingredientes agregados</h3>
+               <div id="resumenIngredientes"></div>
+               <div class="total" id="totalIngredientes"></div>
+
+           </div>
+       </div>
+
+
+        <!-- ===== SECCIÓN 2: COSTOS EXTRA ===== -->
+        <div class="card">
+            <div class="section-header" onclick="toggleSection('sec-costos')">
+                🔥 Costos extra y trabajo
+                <span>tocar para abrir / cerrar</span>
+            </div>
+
+            <div id="sec-costos" class="section-content">
+                <label>Gas / luz / horno</label>
+                <input id="costoGas" type="number">
+
+                <label>Envases, bolsas, cajas</label>
+                <input id="costoEnvases" type="number">
+
+                <label>Transporte</label>
+                <input id="costoTransporte" type="number">
+
+                <label>Horas trabajadas</label>
+                <input id="horasTrabajo" type="number">
+
+                <label>Valor por hora</label>
+                <input id="valorHora" type="number">
+
+                <button onclick="calcularCostosExtra()">Calcular costo total</button>
+
+                <div id="resumenTotal"></div>
+            </div>
+        </div>
+
+        <!-- ===== SECCIÓN 3: PRECIO ===== -->
+        <div class="card">
+            <div class="section-header" onclick="toggleSection('sec-precio')">
+                💰 Precio de venta
+                <span>tocar para abrir / cerrar</span>
+            </div>
+
+            <div id="sec-precio" class="section-content oculto">
+                <label>Unidades producidas</label>
+                <input id="unidadesProducidas" type="number">
+
+                <label>Margen de ganancia (%)</label>
+                <input id="margenGanancia" type="number" value="50">
+
+                <button onclick="calcularPrecioVenta()">Calcular precio</button>
+                <div id="resultadoPrecio" class="alerta"></div>
+            </div>
+        </div>
+
+        <!-- ===== SECCIÓN 4: PACKS ===== -->
+        <div class="card">
+            <div class="section-header" onclick="toggleSection('sec-packs')">
+                📦 Packs
+                <span>tocar para abrir / cerrar</span>
+            </div>
+
+            <div id="sec-packs" class="section-content oculto">
+                <div id="resultadoPacks"></div>
+            </div>
+        </div>
+
+        <!-- ===== SECCIÓN 5: EXPORTAR ===== -->
+        <div class="card">
+            <div class="section-header" onclick="toggleSection('sec-exportar')">
+                📤 Exportar
+                <span>tocar para abrir / cerrar</span>
+            </div>
+
+            <div id="sec-exportar" class="section-content oculto">
+                <button onclick="exportarImagen()">🖼️ Imagen</button>
+                <button onclick="exportarPDF()">🖨️ PDF</button>
+                <button onclick="compartirWhatsApp()">📲 Compartir por WhatsApp</button>
+            </div>
+        </div>
+
+    </div>
+
+    <button class="btn-danger" onclick="limpiarTodo()">
+        🧹 Limpiar toda la receta
+    </button>
+
+    <div id="reporte" class="reporte oculto">
+        <h1>🍪 Galletas de la guagua</h1>
+        <p class="fecha"></p>
+        <h2 class="rep-titulo"></h2>
+
+        <h2>🧾 Ingredientes</h2>
+        <div class="rep-ingredientes"></div>
+
+        <h2>💰 Costos</h2>
+        <div class="rep-costos"></div>
+
+        <h2>📈 Producción y precio</h2>
+        <div class="rep-precio"></div>
+
+        <h2>📦 Packs sugeridos</h2>
+        <div class="rep-packs"></div>
+    </div>
+
+    <script src="app.js"></script>
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('./sw.js');
+        }
+    </script>
+
+
+</body>
+
+</html>

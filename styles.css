@@ -1,0 +1,292 @@
+:root {
+    --morado: #b48bd6;
+    --morado-oscuro: #8e5bbf;
+    --fondo: #f6f0fa;
+    --card: #ffffff;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: var(--fondo);
+    margin: 0;
+    padding: 16px;
+    color: #333;
+}
+
+h1 {
+    text-align: center;
+    color: var(--morado-oscuro);
+}
+
+.app {
+    max-width: 720px;
+    margin: 0 auto;
+}
+
+.card {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 16px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+label {
+    font-weight: bold;
+    display: block;
+    margin-top: 8px;
+}
+
+small {
+    color: #555;
+}
+
+input,
+button {
+    width: 100%;
+    padding: 10px;
+    margin-top: 4px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+}
+
+button {
+    background: var(--morado);
+    color: white;
+    border: none;
+    margin-top: 10px;
+}
+
+button:hover {
+    background: var(--morado-oscuro);
+}
+
+.total {
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.alerta {
+    margin-top: 10px;
+    padding: 10px;
+    border-radius: 8px;
+    background: #efe3f9;
+}
+
+.card+.card {
+    margin-top: 20px;
+}
+
+/* Tablets */
+@media (min-width: 768px) {
+    body {
+        padding: 24px;
+    }
+
+    .card {
+        padding: 20px;
+    }
+}
+
+/* Escritorio */
+@media (min-width: 1024px) {
+    .app {
+        max-width: 900px;
+    }
+}
+
+/* ===== SECCIONES PLEGABLES ===== */
+
+.section-header {
+    background: #e9dcf5;
+    padding: 12px;
+    border-radius: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.section-header span {
+    font-size: 14px;
+}
+
+.section-content {
+    margin-top: 12px;
+}
+
+.section-content.oculto {
+    display: none;
+}
+
+/* ===== REPORTE ===== */
+/* ================================
+   REPORTE (SOLO EXPORTACIÓN)
+================================ */
+
+.reporte {
+    background: white;
+    color: #4A4453;
+    padding: 40px;
+    max-width: 650px;
+    margin: 0 auto;
+    border-radius: 24px;
+    border: 1px solid #F3EAFE;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, .08);
+    font-family: 'Quicksand', Arial, sans-serif;
+}
+
+.reporte h1 {
+    text-align: center;
+    color: #5D4D7A;
+    font-size: 2rem;
+    margin-bottom: 5px;
+}
+
+.reporte .fecha {
+    text-align: center;
+    font-size: 0.85rem;
+    color: #9D81BA;
+    letter-spacing: 1.5px;
+    margin-bottom: 10px;
+}
+
+.reporte .rep-titulo {
+    text-align: center;
+    color: #9D81BA;
+    font-size: 1.2rem;
+    margin-bottom: 30px;
+}
+
+.reporte h2 {
+    margin-top: 30px;
+    color: #5D4D7A;
+    font-size: 1.2rem;
+    border-bottom: 2px dashed #F3EAFE;
+    padding-bottom: 8px;
+    margin-bottom: 15px;
+}
+
+.reporte .linea {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 10px;
+    border-radius: 8px;
+    margin-bottom: 4px;
+}
+
+.reporte .linea:nth-child(odd) {
+    background-color: #FAF9FF;
+}
+
+.reporte .linea span:last-child {
+    font-weight: 700;
+    color: #5D4D7A;
+}
+
+.reporte .total {
+    font-weight: 700;
+    margin-top: 15px;
+    padding: 12px 15px;
+    background: #F3EAFE;
+    color: #5D4D7A;
+    border-radius: 12px;
+    display: flex;
+    justify-content: space-between;
+}
+
+/* PACKS */
+
+.reporte .rep-packs {
+    display: grid;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.reporte .pack-card {
+    background: #FAF9FF;
+    padding: 15px;
+    border-radius: 15px;
+    border-left: 6px solid #9D81BA;
+}
+
+.reporte .pack-card strong {
+    display: block;
+    font-size: 1.1rem;
+    color: #5D4D7A;
+    margin-bottom: 5px;
+}
+
+.reporte .ganancia-tag {
+    background: #E8F5E9;
+    color: #2E7D32;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    float: right;
+}
+
+/* ================================
+   PRINT (CRÍTICO)
+================================ */
+
+@media print {
+    body * {
+        visibility: hidden;
+    }
+
+    #reporte,
+    #reporte * {
+        visibility: visible;
+    }
+
+    #reporte {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        box-shadow: none;
+        border: none;
+    }
+}
+
+/* ===== OCULTAR ELEMENTOS CONTROLADOS POR JS ===== */
+.oculto {
+    display: none !important;
+}
+
+/* SPLASH SCREEN */
+#splash {
+    position: fixed;
+    inset: 0;
+    background: #b48bd6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+#splash img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.btn-instalar {
+    background: #8e5bbf;
+    color: white;
+    border: none;
+    border-radius: 14px;
+    padding: 16px;
+    font-size: 18px;
+    font-weight: bold;
+    margin: 20px 0;
+    width: 100%;
+}
+
+.btn-instalar:hover {
+    background: #7a49a8;
+}

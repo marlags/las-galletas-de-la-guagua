@@ -1,0 +1,19 @@
+{
+    "name": "Galletas de la guagua 🍪",
+    "short_name": "Galletas de la 👶",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#f6f0fa",
+    "theme_color": "#b48bd6",
+    "icons": [{
+            "src": "icon-192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ]
+}
