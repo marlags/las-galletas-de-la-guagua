@@ -417,27 +417,33 @@ Si borras la app o los datos, las recetas se perderán.
 
     return ok;
 }
+
 function guardarReceta() {
-    if (!nombreRecetaActual) {
-        alert('Primero ponle nombre a la receta');
-        return;
+    let nombre = nombreRecetaActual;
+
+    if (!nombre) {
+        nombre = pedirNombreReceta();
+        if (!nombre) return;
     }
 
     const receta = {
         id: Date.now(),
-        nombre: nombreRecetaActual,
-        ingredientes,
+        nombre,
+        ingredientes: JSON.parse(JSON.stringify(ingredientes)),
         resumenTotal: document.getElementById('resumenTotal').innerHTML,
         resultadoPrecio: document.getElementById('resultadoPrecio').innerHTML,
         resultadoPacks: document.getElementById('resultadoPacks').innerHTML,
-        favorita: false
+        favorita: false,
+        fecha: new Date().toLocaleDateString('es-CL')
     };
+
     recetasGuardadas.push(receta);
     localStorage.setItem('recetas', JSON.stringify(recetasGuardadas));
 
     renderRecetas();
-    alert('💾 Receta guardada');
+    alert('💾 Receta guardada en este celular');
 }
+
 
 function exportarRespaldo() {
     if (recetasGuardadas.length === 0) {
@@ -547,6 +553,7 @@ function borrarReceta(id) {
 document.addEventListener('DOMContentLoaded', () => {
     renderRecetas();
 });
+
 
 
 
