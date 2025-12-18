@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -8,7 +7,8 @@
 
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#b48bd6">
-    <link rel="icon" type="image/png" href="icon-192.png">
+
+    <link rel="icon" href="icon-192.png">
     <link rel="apple-touch-icon" href="icon-192.png">
     <link rel="stylesheet" href="styles.css">
 
@@ -16,188 +16,154 @@
 </head>
 
 <body>
-    <div id="splash">
-        <img src="splash.png" alt="Galletas de la guagua">
+
+<!-- ===== SPLASH ===== -->
+<div id="splash">
+    <img src="splash.png" alt="Galletas de la guagua">
+</div>
+
+<div class="app oculto" id="app">
+
+    <h1>🍪 Galletas de la guagua</h1>
+
+    <!-- ===== RECETAS GUARDADAS ===== -->
+    <div class="card">
+        <div class="section-header" onclick="toggleSection('sec-recetas')">
+            📚 Recetas guardadas
+            <span>tocar para abrir / cerrar</span>
+        </div>
+
+        <div id="sec-recetas" class="section-content">
+            <div id="listaRecetas"></div>
+        </div>
     </div>
 
-    <div class="app">
-
-        <h1>🍪 Galletas de la guagua</h1>
-
-        <!-- ===== RECETAS GUARDADAS (PRIMERA SECCIÓN) ===== -->
-        <div class="card">
-            <div class="section-header" onclick="toggleSection('sec-recetas')">
-                📚 Recetas guardadas
-                <span>tocar para abrir / cerrar</span>
-            </div>
-        
-            <div id="sec-recetas" class="section-content">
-                <div id="listaRecetas"></div>
-            </div>
-        </div>
-
-        <button id="btnInstalar" class="btn-instalar oculto">
-            📲 Instalar Galletas de la guagua
-        </button>
-
-
-        <!-- ===== SECCIÓN 1: INGREDIENTES ===== -->
-       <div class="card">
-           <div class="section-header" onclick="toggleSection('sec-ingredientes')">
-               🧾 Ingredientes
-               <span>tocar para abrir / cerrar</span>
-           </div>
-
-           <div id="sec-ingredientes" class="section-content">
-
-               <p class="ayuda">
-                   ✏️ Ingresa los datos del ingrediente y luego toca “Agregar ingrediente”.
-               </p>
-
-               <label>Nombre del ingrediente</label>
-               <input id="ingNombre" placeholder="Ej: Harina">
-
-               <label>Precio del paquete completo (CLP)</label>
-               <input id="ingPrecio" type="number" placeholder="Ej: 2.500">
-
-               <label>Contenido del paquete (gramos o ml)</label>
-               <input id="ingContenido" type="number" placeholder="Ej: 1000">
-
-               <label>Cantidad usada en esta receta (gramos o ml)</label>
-               <input id="ingUsado" type="number" placeholder="Ej: 200">
-
-               <button class="btn-principal" onclick="agregarIngrediente()">
-                   ➕ Agregar ingrediente
-               </button>
-
-               <hr>
-
-               <h3>📊 Ingredientes agregados</h3>
-               <div id="resumenIngredientes"></div>
-               <div class="total" id="totalIngredientes"></div>
-
-           </div>
-       </div>
-
-
-        <!-- ===== SECCIÓN 2: COSTOS EXTRA ===== -->
-        <div class="card">
-            <div class="section-header" onclick="toggleSection('sec-costos')">
-                🔥 Costos extra y trabajo
-                <span>tocar para abrir / cerrar</span>
-            </div>
-
-            <div id="sec-costos" class="section-content">
-                <label>Gas / luz / horno</label>
-                <input id="costoGas" type="number">
-
-                <label>Envases, bolsas, cajas</label>
-                <input id="costoEnvases" type="number">
-
-                <label>Transporte</label>
-                <input id="costoTransporte" type="number">
-
-                <label>Horas trabajadas</label>
-                <input id="horasTrabajo" type="number">
-
-                <label>Valor por hora</label>
-                <input id="valorHora" type="number">
-
-                <button onclick="calcularCostosExtra()">Calcular costo total</button>
-
-                <div id="resumenTotal"></div>
-            </div>
-        </div>
-
-        <!-- ===== SECCIÓN 3: PRECIO ===== -->
-        <div class="card">
-            <div class="section-header" onclick="toggleSection('sec-precio')">
-                💰 Precio de venta
-                <span>tocar para abrir / cerrar</span>
-            </div>
-
-            <div id="sec-precio" class="section-content oculto">
-                <label>Unidades producidas</label>
-                <input id="unidadesProducidas" type="number">
-
-                <label>Margen de ganancia (%)</label>
-                <input id="margenGanancia" type="number" value="50">
-
-                <button onclick="calcularPrecioVenta()">Calcular precio</button>
-                <div id="resultadoPrecio" class="alerta"></div>
-            </div>
-        </div>
-
-        <!-- ===== SECCIÓN 4: PACKS ===== -->
-        <div class="card">
-            <div class="section-header" onclick="toggleSection('sec-packs')">
-                📦 Packs
-                <span>tocar para abrir / cerrar</span>
-            </div>
-
-            <div id="sec-packs" class="section-content oculto">
-                <div id="resultadoPacks"></div>
-            </div>
-        </div>
-
-        <!-- ===== SECCIÓN 5: EXPORTAR ===== -->
-        <div class="card">
-            <div class="section-header" onclick="toggleSection('sec-exportar')">
-                📤 Exportar/Importar
-                <span>tocar para abrir / cerrar</span>
-            </div>
-
-            <div id="sec-exportar" class="section-content oculto">
-                <button onclick="exportarImagen()">🖼️ Imagen</button>
-                <button onclick="exportarPDF()">🖨️ PDF</button>
-                <button onclick="compartirWhatsApp()">📲 Compartir por WhatsApp</button>
-                <button onclick="exportarRespaldo()">🛟 Respaldar recetas</button>
-
-                <input type="file" id="importarRespaldo" accept=".json" hidden
-                       onchange="importarRespaldo(this.files[0])">
-                <button onclick="document.getElementById('importarRespaldo').click()">
-                📥 Importar recetas
-                </button>
-            </div>
-        </div>
-
-    </div>
-    <button onclick="guardarReceta()">💾 Guardar receta</button>
-    <button class="btn-danger" onclick="limpiarTodo()">
-        🧹 Limpiar toda la receta
+    <!-- ===== BOTÓN INSTALAR ===== -->
+    <button id="btnInstalar" class="btn-instalar oculto">
+        📲 Instalar Galletas de la guagua
     </button>
 
-    <div id="reporte" class="reporte oculto">
-        <h1>🍪 Galletas de la guagua</h1>
-        <p class="fecha"></p>
-        <h2 class="rep-titulo"></h2>
+    <!-- ===== INGREDIENTES ===== -->
+    <div class="card">
+        <div class="section-header" onclick="toggleSection('sec-ingredientes')">
+            🧾 Ingredientes
+            <span>tocar para abrir / cerrar</span>
+        </div>
 
-        <h2>🧾 Ingredientes</h2>
-        <div class="rep-ingredientes"></div>
+        <div id="sec-ingredientes" class="section-content">
+            <label>Nombre del ingrediente</label>
+            <input id="ingNombre">
 
-        <h2>💰 Costos</h2>
-        <div class="rep-costos"></div>
+            <label>Precio paquete completo</label>
+            <input id="ingPrecio" type="number">
 
-        <h2>📈 Producción y precio</h2>
-        <div class="rep-precio"></div>
+            <label>Contenido paquete (g / ml)</label>
+            <input id="ingContenido" type="number">
 
-        <h2>📦 Packs sugeridos</h2>
-        <div class="rep-packs"></div>
+            <label>Cantidad usada</label>
+            <input id="ingUsado" type="number">
+
+            <button onclick="agregarIngrediente()">➕ Agregar ingrediente</button>
+
+            <div id="resumenIngredientes"></div>
+            <div class="total" id="totalIngredientes"></div>
+        </div>
     </div>
 
-    <script src="app.js"></script>
+    <!-- ===== COSTOS ===== -->
+    <div class="card">
+        <div class="section-header" onclick="toggleSection('sec-costos')">
+            🔥 Costos
+            <span>tocar para abrir / cerrar</span>
+        </div>
 
-    <script>
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('./sw.js');
-        }
-    </script>
+        <div id="sec-costos" class="section-content">
+            <input id="costoGas" type="number" placeholder="Gas / luz">
+            <input id="costoEnvases" type="number" placeholder="Envases">
+            <input id="costoTransporte" type="number" placeholder="Transporte">
+            <input id="horasTrabajo" type="number" placeholder="Horas trabajo">
+            <input id="valorHoraInput" type="number" placeholder="Valor hora">
 
+            <button onclick="calcularCostosExtra()">Calcular costos</button>
+            <div id="resumenTotal"></div>
+        </div>
+    </div>
+
+    <!-- ===== PRECIO ===== -->
+    <div class="card">
+        <div class="section-header" onclick="toggleSection('sec-precio')">
+            💰 Precio
+            <span>tocar para abrir / cerrar</span>
+        </div>
+
+        <div id="sec-precio" class="section-content oculto">
+            <input id="unidadesProducidas" type="number" placeholder="Unidades">
+            <input id="margenGanancia" type="number" value="50">
+            <button onclick="calcularPrecioVenta()">Calcular precio</button>
+            <div id="resultadoPrecio"></div>
+        </div>
+    </div>
+
+    <!-- ===== PACKS ===== -->
+    <div class="card">
+        <div class="section-header" onclick="toggleSection('sec-packs')">
+            📦 Packs
+            <span>tocar para abrir / cerrar</span>
+        </div>
+        <div id="sec-packs" class="section-content oculto">
+            <div id="resultadoPacks"></div>
+        </div>
+    </div>
+
+    <!-- ===== EXPORTAR ===== -->
+    <div class="card">
+        <div class="section-header" onclick="toggleSection('sec-exportar')">
+            📤 Exportar
+            <span>tocar para abrir / cerrar</span>
+        </div>
+        <div id="sec-exportar" class="section-content oculto">
+            <button onclick="exportarImagen()">🖼️ Imagen</button>
+            <button onclick="exportarPDF()">🖨️ PDF</button>
+        </div>
+    </div>
+
+    <button onclick="guardarReceta()">💾 Guardar receta</button>
+    <button onclick="limpiarTodo()">🧹 Limpiar todo</button>
+
+</div>
+
+<!-- ===== REPORTE ===== -->
+<div id="reporte" class="reporte oculto">
+    <h1>🍪 Galletas de la guagua</h1>
+    <p class="fecha"></p>
+    <h2 class="rep-titulo"></h2>
+
+    <h2>🧾 Ingredientes</h2>
+    <div class="rep-ingredientes"></div>
+
+    <h2>💰 Costos</h2>
+    <div class="rep-costos"></div>
+
+    <h2>📦 Packs</h2>
+    <div class="rep-packs"></div>
+</div>
+
+<script src="app.js"></script>
+
+<script>
+/* Splash */
+window.addEventListener('load', () => {
+    setTimeout(() => {
+        document.getElementById('splash').style.display = 'none';
+        document.getElementById('app').classList.remove('oculto');
+    }, 800);
+});
+
+/* Service worker */
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw.js');
+}
+</script>
 
 </body>
-
 </html>
-
-
-
-
