@@ -138,6 +138,13 @@
                 <button onclick="exportarImagen()">🖼️ Imagen</button>
                 <button onclick="exportarPDF()">🖨️ PDF</button>
                 <button onclick="compartirWhatsApp()">📲 Compartir por WhatsApp</button>
+                <button onclick="exportarRespaldo()">🛟 Exportar respaldo</button>
+
+                <input type="file" id="importarRespaldo" accept=".json" hidden
+                       onchange="importarRespaldo(this.files[0])">
+                <button onclick="document.getElementById('importarRespaldo').click()">
+                📥 Restaurar recetas
+                </button>
             </div>
         </div>
 
@@ -177,3 +184,4 @@
 </body>
 
 </html>
+
