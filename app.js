@@ -51,14 +51,19 @@ function calcularIngredientes() {
     const res = document.getElementById('resumenIngredientes');
     res.innerHTML = '';
 
-    ingredientes.forEach(i => {
+    ingredientes.forEach((i, index) => {
         total += i.costo;
+
         res.innerHTML += `
-      <div class="linea">
-        <span>${i.nombre}</span>
-        <span>$${clp(Math.round(i.costo))}</span>
-      </div>
-    `;
+          <div class="linea">
+            <span>${i.nombre}</span>
+            <span>$${clp(Math.round(i.costo))}</span>
+            <span>
+              <button onclick="editarIngrediente(${index})">✏️</button>
+              <button onclick="eliminarIngrediente(${index})">🗑️</button>
+            </span>
+          </div>
+        `;
     });
 
     document.getElementById('totalIngredientes').innerText =
@@ -392,4 +397,36 @@ function compartirWhatsApp() {
                 cerrarReporte();
             });
         });
+}
+
+function eliminarIngrediente(index) {
+    if (!confirm('¿Eliminar este ingrediente?')) return;
+    ingredientes.splice(index, 1);
+    recalcularTodo();
+}
+
+function editarIngrediente(index) {
+    const i = ingredientes[index];
+
+    const nuevoNombre = prompt('Nombre del ingrediente', i.nombre);
+    if (!nuevoNombre) return;
+
+    const nuevoCosto = prompt('Costo de este ingrediente', Math.round(i.costo));
+    if (!nuevoCosto || isNaN(nuevoCosto)) return;
+
+    ingredientes[index] = {
+        nombre: nuevoNombre,
+        costo: Number(nuevoCosto)
+    };
+
+    recalcularTodo();
+}
+
+function recalcularTodo() {
+    calcularIngredientes();
+    calcularCostosExtra();
+
+    if (window._precioUnitario) {
+        calcularPrecioVenta();
+    }
 }
