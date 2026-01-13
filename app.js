@@ -36,13 +36,11 @@ function agregarIngrediente() {
     const costo = (precio / contenido) * usado;
 
     if (indiceEditando !== null) {
-        // Modo editar
-        ingredientes[indiceEditando] = { nombre, costo, precio, contenido, usado };
+        ingredientes[indiceEditando] = { nombre, precio, contenido, usado, costo };
         indiceEditando = null;
         document.querySelector('.btn-principal').innerText = '➕ Agregar ingrediente';
     } else {
-        // Modo nuevo
-        ingredientes.push({ nombre, costo, precio, contenido, usado });
+        ingredientes.push({ nombre, precio, contenido, usado, costo });
     }
 
     limpiarFormularioIngrediente();
@@ -58,14 +56,14 @@ function calcularIngredientes() {
         total += i.costo;
 
         res.innerHTML += `
-          <div class="linea">
+        <div class="linea">
             <span>${i.nombre}</span>
             <span>$${clp(Math.round(i.costo))}</span>
-            <span>
-              <button onclick="editarIngrediente(${index})">✏️</button>
-              <button onclick="eliminarIngrediente(${index})">🗑️</button>
-            </span>
-          </div>
+            <div class="receta-actions">
+                <button onclick="editarIngrediente(${index})">✏️</button>
+                <button onclick="eliminarIngrediente(${index})">🗑️</button>
+            </div>
+        </div>
         `;
     });
 
@@ -73,7 +71,7 @@ function calcularIngredientes() {
         'Total ingredientes: $' + clp(Math.round(total));
 
     return total;
-}
+            }
 
 /*************************************************
  * COSTOS EXTRA + TRABAJO
@@ -438,5 +436,6 @@ function limpiarFormularioIngrediente() {
     document.getElementById('ingContenido').value = '';
     document.getElementById('ingUsado').value = '';
 }
+
 
 
