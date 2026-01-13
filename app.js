@@ -4,6 +4,7 @@
 let accionUsuario = false;
 let nombreRecetaActual = '';
 let ingredientes = [];
+let indiceEditando = null;
 
 /*************************************************
  * UTILIDADES
@@ -20,29 +21,31 @@ function toggleSection(id) {
 /*************************************************
  * INGREDIENTES
  *************************************************/
+
 function agregarIngrediente() {
     const nombre = document.getElementById('ingNombre').value.trim();
-    const precio = Number(document.getElementById('ingPrecio').value);
-    const contenido = Number(document.getElementById('ingContenido').value);
-    const usado = Number(document.getElementById('ingUsado').value);
+    const precio = Number(document.getElementById('ingPrecio').value || 0);
+    const contenido = Number(document.getElementById('ingContenido').value || 0);
+    const usado = Number(document.getElementById('ingUsado').value || 0);
 
     if (!nombre || precio <= 0 || contenido <= 0 || usado <= 0) {
-        alert('Por favor completa todos los datos del ingrediente.');
+        alert('Completa todos los datos del ingrediente');
         return;
     }
 
     const costo = (precio / contenido) * usado;
 
-    ingredientes.push({
-        nombre,
-        costo
-    });
+    if (indiceEditando !== null) {
+        // Modo editar
+        ingredientes[indiceEditando] = { nombre, costo, precio, contenido, usado };
+        indiceEditando = null;
+        document.querySelector('.btn-principal').innerText = '➕ Agregar ingrediente';
+    } else {
+        // Modo nuevo
+        ingredientes.push({ nombre, costo, precio, contenido, usado });
+    }
 
-    document.getElementById('ingNombre').value = '';
-    document.getElementById('ingPrecio').value = '';
-    document.getElementById('ingContenido').value = '';
-    document.getElementById('ingUsado').value = '';
-
+    limpiarFormularioIngrediente();
     calcularIngredientes();
 }
 
@@ -406,21 +409,19 @@ function eliminarIngrediente(index) {
 }
 
 function editarIngrediente(index) {
-    const i = ingredientes[index];
+    const ing = ingredientes[index];
 
-    const nuevoNombre = prompt('Nombre del ingrediente', i.nombre);
-    if (!nuevoNombre) return;
+    document.getElementById('ingNombre').value = ing.nombre;
+    document.getElementById('ingPrecio').value = ing.precio;
+    document.getElementById('ingContenido').value = ing.contenido;
+    document.getElementById('ingUsado').value = ing.usado;
 
-    const nuevoCosto = prompt('Costo de este ingrediente', Math.round(i.costo));
-    if (!nuevoCosto || isNaN(nuevoCosto)) return;
+    indiceEditando = index;
 
-    ingredientes[index] = {
-        nombre: nuevoNombre,
-        costo: Number(nuevoCosto)
-    };
-
-    recalcularTodo();
+    document.querySelector('.btn-principal').innerText = '💾 Guardar cambios';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 }
+
 
 function recalcularTodo() {
     calcularIngredientes();
@@ -430,3 +431,12 @@ function recalcularTodo() {
         calcularPrecioVenta();
     }
 }
+
+function limpiarFormularioIngrediente() {
+    document.getElementById('ingNombre').value = '';
+    document.getElementById('ingPrecio').value = '';
+    document.getElementById('ingContenido').value = '';
+    document.getElementById('ingUsado').value = '';
+}
+
+
