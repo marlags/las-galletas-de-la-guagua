@@ -58,7 +58,7 @@ function calcularIngredientes() {
         res.innerHTML += `
         <div class="linea">
             <span>${i.nombre}</span>
-            <span>$${clp(Math.round(i.costo))}</span>
+            <span>$${clp(Math.round(i.costo))} (${i.usado} g)</span>
             <div class="receta-actions">
                 <button onclick="editarIngrediente(${index})">✏️</button>
                 <button onclick="eliminarIngrediente(${index})">🗑️</button>
@@ -401,9 +401,14 @@ function compartirWhatsApp() {
 }
 
 function eliminarIngrediente(index) {
-    if (!confirm('¿Eliminar este ingrediente?')) return;
+    const ing = ingredientes[index];
+
+    if (!confirm(`¿Eliminar ${ing.nombre}?`)) {
+        return;
+    }
+
     ingredientes.splice(index, 1);
-    recalcularTodo();
+    calcularIngredientes();
 }
 
 function editarIngrediente(index) {
@@ -436,6 +441,7 @@ function limpiarFormularioIngrediente() {
     document.getElementById('ingContenido').value = '';
     document.getElementById('ingUsado').value = '';
 }
+
 
 
 
