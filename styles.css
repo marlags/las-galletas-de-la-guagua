@@ -290,3 +290,11 @@ button:hover {
 .btn-instalar:hover {
     background: #7a49a8;
 }
+
+.linea button {
+    width: auto;
+    padding: 4px 8px;
+    font-size: 14px;
+    margin-left: 4px;
+}
+
